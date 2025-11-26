@@ -1,12 +1,8 @@
-// ParseTower Example - Tower Defense Game Configuration
-
-// Define the game map
 map GameMap1 {
     size = (20, 15);
     path = [(0,7), (5,7), (5,3), (10,3), (10,10), (15,10), (15,7), (19,7)];
 }
 
-// Define enemy types
 enemy Goblin {
     hp = 50;
     speed = 1.5;
@@ -25,7 +21,6 @@ enemy Dragon {
     reward = 100;
 }
 
-// Define tower types
 tower Arrow {
     range = 3;
     damage = 15;
@@ -47,7 +42,6 @@ tower Magic {
     cost = 100;
 }
 
-// Define waves
 wave Wave1 {
     spawn(Goblin, count=10, start=0, interval=2);
     spawn(Orc, count=3, start=20, interval=5);
@@ -64,9 +58,7 @@ wave Wave3 {
     spawn(Dragon, count=5, start=30, interval=10);
 }
 
-// Place some initial towers
 place Arrow at (3, 5);
 place Arrow at (3, 9);
 place Cannon at (8, 3);
 place Magic at (12, 10);
-

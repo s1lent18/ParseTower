@@ -16,7 +16,7 @@ class Parser {
 
         void advance();
         bool match(TokenType type);
-        void expect(TokenType type, const std::string& msg);
+        Token expect(TokenType type, const std::string& msg);
 
         std::shared_ptr<ASTNode> parseDeclaration();
         std::shared_ptr<MapDecl> parseMapDecl();

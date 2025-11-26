@@ -18,6 +18,7 @@ Lexer::Lexer(const std::string& src)
         {"start", TokenType::START},
         {"interval", TokenType::INTERVAL},
     };
+
 }
 
 char Lexer::peek() {
@@ -81,37 +82,34 @@ Token Lexer::number() {
 }
 
 Token Lexer::getNextToken() {
-    skipWhitespace();
-    skipComment();
-    skipWhitespace();
+    while (true) {
+        skipWhitespace();
+        skipComment();
+        skipWhitespace();
 
-    if (isAtEnd()) return Token(TokenType::END_OF_FILE, "", line);
+        if (isAtEnd()) return Token(TokenType::END_OF_FILE, "", line);
 
-    char c = advance();
+        char c = advance();
 
-    if (isdigit(c))
-        return number();
+        if (isdigit(c))
+            return number();
+        if (isalpha(c) || c == '_')
+            return identifier();
 
-    if (isalpha(c) || c == '_')
-        return identifier();
+        switch (c) {
+            case '{': return Token(TokenType::LBRACE, "{", line);
+            case '}': return Token(TokenType::RBRACE, "}", line);
+            case '(': return Token(TokenType::LPAREN, "(", line);
+            case ')': return Token(TokenType::RPAREN, ")", line);
+            case '[': return Token(TokenType::LBRACKET, "[", line);
+            case ']': return Token(TokenType::RBRACKET, "]", line);
+            case ',': return Token(TokenType::COMMA, ",", line);
+            case ';': return Token(TokenType::SEMICOLON, ";", line);
+            case '=': return Token(TokenType::EQUAL, "=", line);
+        }
 
-    switch (c) {
-        case '{': return Token(TokenType::LBRACE, "{", line);
-        case '}': return Token(TokenType::RBRACE, "}", line);
-        case '(': return Token(TokenType::LPAREN, "(", line);
-        case ')': return Token(TokenType::RPAREN, ")", line);
-        case '[': return Token(TokenType::LBRACKET, "[", line);
-        case ']': return Token(TokenType::RBRACKET, "]", line);
-        case ',': return Token(TokenType::COMMA, ",", line);
-        case ';': return Token(TokenType::SEMICOLON, ";", line);
-        case '=': return Token(TokenType::EQUAL, "=", line);
-        case '+': return Token(TokenType::PLUS, "+", line);
-        case '-': return Token(TokenType::MINUS, "-", line);
-        case '*': return Token(TokenType::MUL, "*", line);
-        case '/': return Token(TokenType::DIV, "/", line);
+        return Token(TokenType::UNKNOWN, std::string(1, c), line);
     }
-
-    return Token(TokenType::UNKNOWN, std::string(1, c), line);
 }
 
 Token Lexer::peekToken() {
