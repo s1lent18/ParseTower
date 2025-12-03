@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include <iostream>
+#include <cctype> 
 
 Lexer::Lexer(const std::string& src)
     : source(src), pos(0), line(1)

@@ -142,11 +142,10 @@ std::vector<IRInstruction> Optimizer::duplicateDefinitionRemoval(const std::vect
 
 std::vector<IRInstruction> Optimizer::redundantSpawnMerging(const std::vector<IRInstruction>& instructions) {
     std::vector<IRInstruction> optimized;
-    std::map<std::string, IRInstruction> spawnGroups; // Key: wave_enemy_start_interval
+    std::map<std::string, size_t> spawnGroupIndex; // Key -> index in optimized
     
     for (const auto& instr : instructions) {
         if (instr.opcode == IROpcode::SPAWN_ENEMY && instr.operands.size() >= 2) {
-            // Create key from wave, enemy type, start time, and interval
             std::string wave = instr.operands[0];
             std::string enemy = instr.operands[1];
             int start = std::get<int>(instr.metadata.at("start"));
@@ -154,23 +153,20 @@ std::vector<IRInstruction> Optimizer::redundantSpawnMerging(const std::vector<IR
             
             std::string key = wave + "_" + enemy + "_" + std::to_string(start) + "_" + std::to_string(interval);
             
-            if (spawnGroups.find(key) != spawnGroups.end()) {
-                // Merge spawn counts
-                int existingCount = std::get<int>(spawnGroups[key].metadata.at("count"));
+            if (spawnGroupIndex.find(key) != spawnGroupIndex.end()) {
+                // Merge: update existing spawn in-place
+                size_t idx = spawnGroupIndex[key];
+                int existingCount = std::get<int>(optimized[idx].metadata.at("count"));
                 int newCount = std::get<int>(instr.metadata.at("count"));
-                spawnGroups[key].metadata["count"] = existingCount + newCount;
+                optimized[idx].metadata["count"] = existingCount + newCount;
                 std::cout << "  Optimization: Merged redundant spawn in wave " << wave << "\n";
             } else {
-                spawnGroups[key] = instr;
+                spawnGroupIndex[key] = optimized.size();
+                optimized.push_back(instr);
             }
         } else {
             optimized.push_back(instr);
         }
-    }
-    
-    // Add all merged spawns
-    for (const auto& pair : spawnGroups) {
-        optimized.push_back(pair.second);
     }
     
     return optimized;

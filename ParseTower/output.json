@@ -65,22 +65,60 @@
       {
         "name": "Wave1",
         "spawns": [
-
+          {
+            "enemyType": "Goblin",
+            "count": 10,
+            "start": 0,
+            "interval": 2
+          },
+          {
+            "enemyType": "Orc",
+            "count": 3,
+            "start": 20,
+            "interval": 5
+          }
         ]
       },
       {
         "name": "Wave2",
         "spawns": [
-
+          {
+            "enemyType": "Goblin",
+            "count": 15,
+            "start": 0,
+            "interval": 1
+          },
+          {
+            "enemyType": "Orc",
+            "count": 8,
+            "start": 15,
+            "interval": 3
+          },
+          {
+            "enemyType": "Dragon",
+            "count": 1,
+            "start": 50,
+            "interval": 1
+          }
         ]
       },
       {
         "name": "Wave3",
         "spawns": [
-
+          {
+            "enemyType": "Orc",
+            "count": 20,
+            "start": 0,
+            "interval": 2
+          },
+          {
+            "enemyType": "Dragon",
+            "count": 5,
+            "start": 30,
+            "interval": 10
+          }
         ]
-      }
-    ],
+      }    ],
     "initialPlacements": [
       {
         "towerType": "Arrow",

@@ -21,6 +21,24 @@ std::string readFile(const std::string& filename) {
     return buffer.str();
 }
 
+void dumpIR(const std::vector<IRInstruction>& instrs) {
+    std::cerr << "---- IR Dump ----\n";
+    for (size_t i = 0; i < instrs.size(); ++i) {
+        const auto &ins = instrs[i];
+        std::cerr << i << ": opcode=" << static_cast<int>(ins.opcode) 
+                  << ", operands=[";
+        for (size_t k = 0; k < ins.operands.size(); ++k) {
+            if (k) std::cerr << ", ";
+            std::cerr << '"' << ins.operands[k] << '"';
+        }
+        std::cerr << "]";
+        if (!ins.metadata.empty())
+            std::cerr << ", metadata_count=" << ins.metadata.size();
+        std::cerr << "\n";
+    }
+    std::cerr << "-----------------\n";
+}
+
 void writeFile(const std::string& filename, const std::string& content) {
     std::ofstream file(filename);
     if (!file.is_open()) {
@@ -82,6 +100,11 @@ int main(int argc, char* argv[]) {
     std::cout << "[Phase 1] Lexical Analysis...\n";
     std::string source = readFile(inputFile);
     Lexer lexer(source);
+    // while (true) {
+    //     Token t = lexer.getNextToken();
+    //     std::cout << "TOKEN " << (int)t.type << " '" << t.lexeme << "'\n";
+    //     if (t.type == TokenType::END_OF_FILE) break;
+    // }
     
     // Phase 2: Syntax Analysis (Parsing)
     std::cout << "[Phase 2] Syntax Analysis (Parsing)...\n";
@@ -145,6 +168,9 @@ int main(int argc, char* argv[]) {
     // Phase 6: Code Generation
     std::cout << "[Phase 6] Code Generation...\n";
     CodeGenerator codeGen;
+
+    dumpIR(optimizedIR);
+
     std::string output;
     
     if (readableFormat) {
